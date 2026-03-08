@@ -99,7 +99,7 @@ const animateCounter = (counter) => {
   const isPercent = initialText.includes("%");
   const isPlus = initialText.includes("+") && !isK;
 
-  const duration = 2500;
+  const duration = 4000;
   const startTime = performance.now();
 
   const update = (currentTime) => {
@@ -137,18 +137,39 @@ const animateCounter = (counter) => {
 
 /* Trigger once when About section enters view */
 const observer = new IntersectionObserver(
-  ([entry]) => {
-    if (entry.isIntersecting) {
-      counters.forEach(counter => animateCounter(counter));
-      observer.disconnect();
-    }
+  (entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        counters.forEach(counter => animateCounter(counter));
+        observer.disconnect();
+      }
+    });
   },
-  { threshold: 0.5 }
+  {
+    threshold: 0.2,
+    rootMargin: "0px 0px -50px 0px"
+  }
 );
 
 const aboutSection = document.querySelector(".about-section");
 if (aboutSection) {
   observer.observe(aboutSection);
+}
+
+/* MOBILE FALLBACK */
+if (counters.length) {
+  setTimeout(() => {
+    counters.forEach(counter => {
+      if (
+        counter.textContent === "0" ||
+        counter.textContent === "0+" ||
+        counter.textContent === "0k+" ||
+        counter.textContent === "0%"
+      ) {
+        animateCounter(counter);
+      }
+    });
+  }, 2000);
 }
 
 /*
@@ -238,7 +259,46 @@ document.querySelectorAll(".navbar-nav .nav-link").forEach(link => {
   });
 });
 
+window.toggleLocations = function(btn){
 
+const dropdown = btn.nextElementSibling;
+
+dropdown.classList.toggle("open");
+
+}
+
+/* ================= LOCATIONS SWIPER ================= */
+
+if (document.querySelector(".locationSwiper")) {
+
+const locationSwiper = new Swiper(".locationSwiper", {
+
+slidesPerView:3,
+spaceBetween:25,
+loop:true,
+grabCursor:true,
+
+autoplay:{
+delay:3500,
+disableOnInteraction:false
+},
+
+pagination:{
+el:".swiper-pagination",
+clickable:true
+},
+
+
+
+breakpoints:{
+320:{slidesPerView:1},
+640:{slidesPerView:2},
+1024:{slidesPerView:3}
+}
+
+});
+
+}
 
 
 });
